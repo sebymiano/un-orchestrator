@@ -20,6 +20,7 @@
 #ifdef ENABLE_DIRECT_VM2VM
 	#define BASE_URL_ATTACH	"attach"
 	#define BASE_URL_DETACH	"detach"
+	#define BASE_URL_SEND_DPDK	"send_dpdk"
 #endif
 
 /*
