@@ -3,6 +3,7 @@
 pthread_mutex_t SwitchPortsAssociation::association_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 map<string, pair <string, string> > SwitchPortsAssociation::associationportgraphnf;
+map<string, int> SwitchPortsAssociation::associationfd;
 
 void SwitchPortsAssociation::setAssociation(string graphID, string port, string nf_name)
 {
@@ -32,4 +33,16 @@ string SwitchPortsAssociation::getNfName(string port)
 		throw SwitchPortsAssociationException();
 
 	return associationportgraphnf[port].second;
+}
+
+int SwitchPortsAssociation::getFD(string port)
+{
+	if(associationfd.count(port) == 0)
+		return -1;
+
+	return associationfd[port];
+}
+void SwitchPortsAssociation::setFD(string port, int fd)
+{
+	associationfd[port] = fd;
 }

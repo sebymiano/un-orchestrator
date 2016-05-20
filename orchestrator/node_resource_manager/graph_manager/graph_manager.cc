@@ -2200,16 +2200,6 @@ bool GraphManager::executeCommandReleatedToPort(string port, string command, str
 
 bool GraphManager::sendToDPDK(string port, string data, string & response)
 {
-	string graphID = SwitchPortsAssociation::getGraphID(port);
-	string nfName = SwitchPortsAssociation::getNfName(port);
-
-	if(tenantLSIs.count(graphID) == 0)
-	{
-		logger(ORCH_DEBUG_INFO, MODULE_NAME, __FILE__, __LINE__,
-				"The graph \"%s\" does not exist", graphID.c_str());
-		return false;
-	}
-
 	/*
 	 * probably this is not the best place to execute this actions.
 	 * It would be better to execute them inside the computer controller, even
@@ -2217,26 +2207,47 @@ bool GraphManager::sendToDPDK(string port, string data, string & response)
 	 * at this point...
 	 */
 	struct sockaddr_un addr;
-	char buf[data.length()];
+	char buf[512];
 	char *buf_ptr;
-	int fd;
+	int fd = -1;
 	char socket_path[32];
+	int ret;
 
-	snprintf(socket_path, sizeof(socket_path), "/tmp/%s", nfName.c_str());
+	/* check if we already had open a connection with this guest, if not, open
+	 * and saved it
+	 */
 
-	fd = socket(AF_UNIX, SOCK_STREAM, 0);
-	if (fd == -1) {
-		logger(ORCH_ERROR, MODULE_NAME, __FILE__, __LINE__, "socket error");
-		return false;
-	}
+	fd = SwitchPortsAssociation::getFD(port);
 
-	memset(&addr, 0, sizeof(addr));
-	addr.sun_family = AF_UNIX;
-	strncpy(addr.sun_path, socket_path, sizeof(addr.sun_path) - 1);
+	if(fd == -1) {
+		string graphID = SwitchPortsAssociation::getGraphID(port);
+		string nfName = SwitchPortsAssociation::getNfName(port);
 
-	if (connect(fd, (struct sockaddr*)&addr, sizeof(addr)) == -1) {
-		logger(ORCH_ERROR, MODULE_NAME, __FILE__, __LINE__, "connect error");
-		return false;
+		if(tenantLSIs.count(graphID) == 0)
+		{
+			logger(ORCH_DEBUG_INFO, MODULE_NAME, __FILE__, __LINE__,
+					"The graph \"%s\" does not exist", graphID.c_str());
+			return false;
+		}
+
+		snprintf(socket_path, sizeof(socket_path), "/tmp/%s", nfName.c_str());
+
+		fd = socket(AF_UNIX, SOCK_STREAM, 0);
+		if (fd == -1) {
+			logger(ORCH_ERROR, MODULE_NAME, __FILE__, __LINE__, "socket error");
+			return false;
+		}
+
+		memset(&addr, 0, sizeof(addr));
+		addr.sun_family = AF_UNIX;
+		strncpy(addr.sun_path, socket_path, sizeof(addr.sun_path) - 1);
+
+		if (connect(fd, (struct sockaddr*)&addr, sizeof(addr)) == -1) {
+			logger(ORCH_ERROR, MODULE_NAME, __FILE__, __LINE__, "connect error");
+			return false;
+		}
+
+		SwitchPortsAssociation::setFD(port, fd);
 	}
 
 	strcpy(buf, data.c_str());
@@ -2256,10 +2267,14 @@ bool GraphManager::sendToDPDK(string port, string data, string & response)
 		buf_ptr += n;
 	} while (left > 0);
 
+	ret = read(fd, buf, sizeof(buf));
+	if(ret == -1)
+		return false;
+
+	response.assign(buf);
 	return true;
 
 error:
-	close(fd);
 	return false;
 }
 

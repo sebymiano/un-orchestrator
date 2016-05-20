@@ -21,6 +21,7 @@ private:
 	*		<"name of port on the switch", pair <graph id, network function name>  >
 	*/
 	static map<string, pair <string, string> > associationportgraphnf;
+	static map<string, int> associationfd;
 
 	/**
 	*	@brief: mutex to protect the access to the map
@@ -51,6 +52,17 @@ protected:
 		@param: port	name of the port
 	*/
 	static string getNfName(string port);
+
+#ifdef ENABLE_DIRECT_VM2VM
+	/**
+	*	@brief: gives the file descriptor used to communicate with dpdk in the guest
+	*	returns -1 inthe case the fd does not exist
+		@param: port	name of the port
+	*/
+	static int getFD(string port);
+	static void setFD(string port, int fd);
+#endif
+
 };
 
 class SwitchPortsAssociationException: public exception

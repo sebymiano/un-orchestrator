@@ -1,4 +1,4 @@
-#include "libvirt.h"
+	#include "libvirt.h"
 #include "libvirt_constants.h"
 
 #include <memory>
@@ -130,18 +130,18 @@ bool Libvirt::startNF(StartNFIn sni)
 							update_flags |= EMULATOR_UPDATED;
 						}
 					}
-					else if (xmlStrcmp(node->name, (xmlChar*)"interface") == 0) {
-						// Currently we just remove any net interface device present in the template and re-create our own
-						// with the exception of bridged interfaces which are handy for managing the VM.
-						xmlChar* type = xmlGetProp(node, (xmlChar*)"type");
-						if (xmlStrcmp(type, (xmlChar*)"bridge") == 0) {
-							xmlFree(type);
-							continue;
-						}
-						xmlUnlinkNode(node);
-						xmlFreeNode(node);
-					}
-					break;
+					//else if (xmlStrcmp(node->name, (xmlChar*)"interface") == 0) {
+					//	// Currently we just remove any net interface device present in the template and re-create our own
+					//	// with the exception of bridged interfaces which are handy for managing the VM.
+					//	xmlChar* type = xmlGetProp(node, (xmlChar*)"type");
+					//	if (xmlStrcmp(type, (xmlChar*)"bridge") == 0) {
+					//		xmlFree(type);
+					//		continue;
+					//	}
+					//	xmlUnlinkNode(node);
+					//	xmlFreeNode(node);
+					//}
+					//break;
 				case XML_ATTRIBUTE_NODE:
 					logger(ORCH_ERROR, KVM_MODULE_NAME, __FILE__, __LINE__, "ATTRIBUTE found here");
 					break;
@@ -387,12 +387,13 @@ bool Libvirt::startNF(StartNFIn sni)
  */
 #ifdef ENABLE_DIRECT_VM2VM
 	xmlNodePtr chn = xmlNewChild(devices, NULL, BAD_CAST "channel", NULL);
-	xmlNewProp(chn, BAD_CAST "type", BAD_CAST "pty");
+	xmlNewProp(chn, BAD_CAST "type", BAD_CAST "unix");
 
 	xmlNodePtr srcn = xmlNewChild(chn, NULL, BAD_CAST "source", NULL);
+	xmlNewProp(srcn, BAD_CAST "mode", BAD_CAST "bind");
 	ostringstream sock_path_os;
 	char socket_path[PATH_MAX];
-	snprintf(socket_path, sizeof(socket_path), "/tmp/%s", domain_name);
+	snprintf(socket_path, sizeof(socket_path), "/tmp/%s", nf_name.c_str());
 	xmlNewProp(srcn, BAD_CAST "path", BAD_CAST socket_path);
 
 	xmlNodePtr target = xmlNewChild(chn, NULL, BAD_CAST "target", NULL);

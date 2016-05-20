@@ -1,6 +1,6 @@
 #include "rest_server.h"
 
-#define PCI_SHORT_PRI_FMT "%.2" PRIx8 ":%.2" PRIx8 ".%" PRIx8
+#define PCI_PRI_FMT "%.4" PRIx16 ":%.2" PRIx8 ":%.2" PRIx8 ".%" PRIx8
 
 GraphManager *RestServer::gm = NULL;
 SQLiteManager *dbmanager = NULL;
@@ -1221,7 +1221,7 @@ int RestServer::attachDevice(struct MHD_Connection *connection, void **con_cls)
 	stream >> device_addr_s >> hex >> device_addr >> c;
 	stream >> function_s >> hex >> function >> c;
 
-	snprintf(pci_address, sizeof(pci_address), PCI_SHORT_PRI_FMT, bus, device_addr, function);
+	snprintf(pci_address, sizeof(pci_address), PCI_PRI_FMT, 0x0, bus, device_addr, function);
 
 	logger(ORCH_INFO, MODULE_NAME, __FILE__, __LINE__, "The command '%s' related to the port '%s' has been executed!",command.c_str(),command.c_str());
 	response = MHD_create_response_from_buffer (strlen(pci_address), pci_address, MHD_RESPMEM_MUST_COPY);
@@ -1343,7 +1343,7 @@ int RestServer::sendToDPDK(struct MHD_Connection *connection, void **con_cls)
 			if (name == DIRECT_VM2VM_PORT) {
 				port = value.getString();
 				count++;
-			} else if (name == DIRECT_VM2VM_ID) {
+			} else if (name == DIRECT_VM2VM_COMMAND) {
 				command = value.getString();
 				count++;
 			}
@@ -1367,8 +1367,11 @@ int RestServer::sendToDPDK(struct MHD_Connection *connection, void **con_cls)
 		goto error;
 	}
 
+	if(string_response != "OK")
+		goto error;
+
 	logger(ORCH_INFO, MODULE_NAME, __FILE__, __LINE__,
-			"The DPDK '%s' command related to the port '%s' has been sent!",
+			"The DPDK '%s' command related to the port '%s' has been executed!",
 			command.c_str(),command.c_str());
 
 	response = MHD_create_response_from_buffer (0, NULL, MHD_RESPMEM_MUST_COPY);

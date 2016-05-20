@@ -157,6 +157,7 @@
 	#define DIRECT_VM2VM_ID		"id"
 	#define DIRECT_VM2VM_TYPE	"type"
 	#define DIRECT_VM2VM_DEVICE	"device"
+	#define DIRECT_VM2VM_COMMAND	"command"
 #endif
 
 /*
