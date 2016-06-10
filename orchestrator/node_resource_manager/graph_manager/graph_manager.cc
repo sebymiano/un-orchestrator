@@ -382,6 +382,7 @@ bool GraphManager::deleteGraph(string graphID, bool shutdown)
 	highlevel::Graph *highLevelGraph = (tenantLSIs.find(graphID))->second.getGraph();
 
 #ifdef ENABLE_UNIFY_MONITORING_CONTROLLER
+	logger(ORCH_DEBUG_INFO, MODULE_NAME, __FILE__, __LINE__, "0) Stopping the monitoring controller...");
 	MonitoringController *monitoringController = (tenantLSIs.find(graphID))->second.getMonitoringController();
 	monitoringController->stopMonitoring();
 #endif
@@ -498,7 +499,7 @@ bool GraphManager::deleteFlow(string graphID, string flowID)
 	/**
 	*	Stop the monitoring controller
 	*/
-
+	logger(ORCH_DEBUG_INFO, MODULE_NAME, __FILE__, __LINE__, "Stopping the monitoring controller before removing a flow...");
 	MonitoringController *monitoringController = graphInfo.getMonitoringController();
 	monitoringController->stopMonitoring();
 #endif
@@ -1129,6 +1130,7 @@ bool GraphManager::newGraph(highlevel::Graph *graph)
 			vnfsPortsMapping.push_back(lsi->getNetworkFunctionsPortsNameOnSwitchMap(vnf->getName()));
 		}
 
+		logger(ORCH_DEBUG_INFO, MODULE_NAME, __FILE__, __LINE__, "Starting the monitoring controller for the new graph");
 		monitoringController->startMonitoring(graph->getMeasureString(),portsMapping,vnfsMapping,vnfsPortsMapping);
 #endif
 	} catch (SwitchManagerException e)
@@ -1176,6 +1178,7 @@ bool GraphManager::updateGraph(string graphID, highlevel::Graph *newPiece)
 	uint64_t dpid = lsi->getDpid();
 
 #ifdef ENABLE_UNIFY_MONITORING_CONTROLLER
+	logger(ORCH_DEBUG_INFO, MODULE_NAME, __FILE__, __LINE__, "Stopping the monitoring controller before adding parts to the graph");
 	MonitoringController *monitoringController = graphInfo.getMonitoringController();
 	monitoringController->stopMonitoring();
 #endif
@@ -1664,7 +1667,7 @@ bool GraphManager::updateGraph(string graphID, highlevel::Graph *newPiece)
 		/**
 		*	6) Starts the monitoring controller
 		*/
-		logger(ORCH_DEBUG_INFO, MODULE_NAME, __FILE__, __LINE__, "6) Starting the monitoring controller related to the new graph");
+		logger(ORCH_DEBUG_INFO, MODULE_NAME, __FILE__, __LINE__, "6) Starting the monitoring controller after the update of the graph with new parts");
 
 //		MonitoringController *monitoringController = (tenantLSIs.find(graphID))->second.getMonitoringController();
 
