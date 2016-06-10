@@ -545,7 +545,7 @@ bool GraphManager::deleteFlow(string graphID, string flowID)
 	/**
 	*	Start again the monitoring controller
 	*/
-	logger(ORCH_DEBUG_INFO, MODULE_NAME, __FILE__, __LINE__, "Starting the monitoring controller related to the new graph");
+	logger(ORCH_DEBUG_INFO, MODULE_NAME, __FILE__, __LINE__, "Restarting the monitoring controller after that the flow has been removed");
 
 
 	//Prepare the info related to the physical ports
