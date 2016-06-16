@@ -44,10 +44,10 @@ Vagrant.configure(2) do |config|
   # the vm itself via a shell script
    
   config.vm.provision "shell", inline: <<-SHELL
-#    apt-get update
-#    apt-get install -y ansible
+    apt-get update
+    apt-get install -y ansible
     python /vagrant/provisioning/deploy.py -u "#{username}" -p "#{password}" -b "#{branch}" -c all
-#    sudo ansible-playbook -i "localhost," -c local /vagrant/provisioning/install-playbook.yml
+    sudo ansible-playbook -i "localhost," -c local /vagrant/provisioning/install-playbook.yml
   SHELL
    
 end

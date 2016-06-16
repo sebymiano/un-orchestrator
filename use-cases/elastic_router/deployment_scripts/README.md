@@ -51,7 +51,7 @@ This will log you in as user *vagrant*. Use *sudo* to get root access.
 In addition, Vagrant also supports other operations on guest virtual machine. The detail of which is available in Vagrant help.
 
 ## Post Deployment
-*deploy.py* script allows to rebuild the docker images from the component source code e.g., in case the source code has been modified after it was cloned. (The UN-orchestrator repository is cloned in guest virtual machine under the path: /opt/unify/un-orchestrator). This script takes following command line arguments:  
+*deploy.py* script allows to rebuild the docker images from the component source code e.g., in case the source code has been modified after it was cloned. (The UN-orchestrator repository is cloned in guest virtual machine under the path: */opt/unify/un-orchestrator*). This script takes following command line arguments:  
 
 * **-i or --interactive**: This puts the script in an interactive mode.
 * **-u or --username**: This has direct correspondence with *--docker-registry-username* argument discussed above.
