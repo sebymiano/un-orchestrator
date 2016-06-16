@@ -1,0 +1,152 @@
+---
+- hosts: localhost
+  remote_user: root
+  tasks:
+    - name: "updates apt"
+      apt: update_cache=yes
+      
+    - name: "install dependencies"
+      apt: pkg={{item}} state=installed
+      with_items:
+        - git
+        - automake      
+        - autoconf
+        - libtool
+        - pkg-config
+        - linux-libc-dev
+        - libc6-dev
+        - libcppunit-dev
+        - libcunit1-dev
+        - build-essential
+        - cmake
+        - cmake-curses-gui
+        - libboost-all-dev
+        - libmicrohttpd-dev
+        - libxml2-dev
+        - ethtool
+        - sqlite3
+        - libsqlite3-dev
+        - libssl-dev
+        - unzip
+        - python-pip
+        - libjson-c-dev
+        - libjson-c2
+        - libzmq3-dev
+        
+    - name: "fetch rofl"
+      git: repo=https://github.com/bisdn/rofl-common
+           dest=/vagrant/rofl-common
+           version=stable-0.6
+    
+    - name: "config rofl"
+      command: "./autogen.sh chdir=/vagrant/rofl-common/" 
+
+    - name: "build rofl"
+      command: "{{ item }} chdir=/vagrant/rofl-common/build" 
+      with_items: 
+      - ../configure
+      - make
+      - make install
+      
+    - name: "fetch zeromq - A DoubleDecker prequisite"
+      get_url: url="http://github.com/zeromq/czmq/archive/v3.0.2.tar.gz" dest=/vagrant/v3.0.2.tar.gz
+      
+    - name: "untar zeromq"
+      unarchive: src=/vagrant/v3.0.2.tar.gz dest=/vagrant copy=no
+
+    - name: "build zeromq"
+      shell: "{{ item }} chdir=/vagrant/czmq-3.0.2"
+      with_items:
+      - ./autogen.sh
+      - ./configure --prefix=/usr
+      - make
+      - make install
+
+    - name: "fetch urcu - A DoubleDecker prequisite"
+      get_url: url="http://www.lttng.org/files/urcu/userspace-rcu-0.9.1.tar.bz2" dest=/vagrant/userspace-rcu-0.9.1.tar.bz2
+      
+    - name: "untar urcu"
+      unarchive: src=/vagrant/userspace-rcu-0.9.1.tar.bz2 dest=/vagrant copy=no
+
+    - name: "build urcu"
+      shell: "{{ item }} chdir=/vagrant/userspace-rcu-0.9.1"
+      with_items:
+      - ./configure --prefix=/usr
+      - make
+      - make install
+
+    - name: "fetch libsodium - A DoubleDecker prequisite"
+      get_url: url="http://download.libsodium.org/libsodium/releases/libsodium-1.0.7.tar.gz" dest=/vagrant/libsodium-1.0.7.tar.gz
+      
+    - name: "untar libsodium"
+      unarchive: src=/vagrant/libsodium-1.0.7.tar.gz dest=/vagrant copy=no
+
+    - name: "build libsodium"
+      shell: "{{ item }} chdir=/vagrant/libsodium-1.0.7"
+      with_items:
+      - ./configure
+      - make
+      - make install
+
+    - name: "fetch DoubleDecker"
+      git: repo=https://github.com/Acreo/DoubleDecker
+           dest=/vagrant/DoubleDecker
+
+    - name: "build DoubleDecker"
+      shell: "{{ item }} chdir=/vagrant/DoubleDecker"
+      with_items:
+      - ./boot.sh
+      - ./configure
+      - make
+      - make install
+
+    - name: "fetch UN orchestrator"
+      git: repo=https://github.com/netgroup-polito/un-orchestrator.git
+           dest=/vagrant/un-orchestrator 
+           version=elastic-router
+        
+    - name: "unzip json-spirit"
+      unarchive: src=/vagrant/un-orchestrator/contrib/json-spirit.zip dest=/vagrant copy=no
+
+    - name: "build json-spirit"
+      command: "{{ item }} chdir=/vagrant/json-spirit/build" 
+      with_items:
+      - cmake .
+      - make
+      - make install
+
+    - name: "unzip inih"
+      unarchive: src=/vagrant/un-orchestrator/contrib/inih.zip dest=/vagrant copy=no
+      
+    - name: "build inih"
+      shell: "{{ item }} chdir=/vagrant/inih"
+      with_items:
+      - cp -r * /vagrant/un-orchestrator/orchestrator/node_resource_manager/database_manager/SQLite
+      
+    - name: "fetch OVS"
+      get_url: url="http://openvswitch.org/releases/openvswitch-2.4.0.tar.gz" dest=/vagrant      
+      
+    - name: "untar OVS"
+      unarchive: src=/vagrant/openvswitch-2.4.0.tar.gz dest=~/ copy=no
+    
+    - name: "build OVS"
+      shell: "{{ item }} chdir=~/openvswitch-2.4.0"
+      with_items:
+      - ./configure --prefix=/ --datarootdir=/usr/share --with-linux=/lib/modules/$(uname -r)/build
+      - make
+      - make install
+          
+    - name: "build name-resolver"
+      command: "{{ item }} chdir=/vagrant/un-orchestrator/name-resolver"
+      with_items:
+      - cmake .
+      - make
+
+    - name: "build orchestrator"
+      command: "{{ item }} chdir=/vagrant/un-orchestrator/orchestrator"
+      with_items:
+      - cmake  -D'ENABLE_KVM=OFF' -D'ENABLE_DOCKER=ON' -D'ENABLE_DOUBLE_DECKER_CONNECTION=ON' .
+      - make
+      
+    - name: "prepare python environment for virtualizer"
+      pip: name="gunicorn falcon cython enum"

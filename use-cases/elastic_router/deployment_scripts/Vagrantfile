@@ -1,0 +1,53 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+require 'getoptlong'
+
+opts = GetoptLong.new(
+  [ '--docker-registry-username', GetoptLong::REQUIRED_ARGUMENT ],
+  [ '--docker-registry-password', GetoptLong::REQUIRED_ARGUMENT ],
+  [ '--github-branch', GetoptLong::OPTIONAL_ARGUMENT ],
+  [ '--vm-memory', GetoptLong::OPTIONAL_ARGUMENT ],
+  [ '--vm-cores', GetoptLong::OPTIONAL_ARGUMENT ]
+)
+
+username=''
+password=''
+memory=1024
+cores=1
+branch='new_elastic_router'
+
+opts.each do |opt, arg|
+  case opt
+    when '--docker-registry-username'
+      username=arg
+	when '--docker-registry-password'
+	  password=arg	
+	when '--github-branch'
+	  branch=arg	
+	when '--vm-memory'
+	  memory=arg	
+	when '--vm-cores'
+	  cores=arg	
+  end
+end
+
+Vagrant.configure(2) do |config|
+
+  config.vm.box = "ubuntu/trusty64"
+  config.vm.provider "virtualbox" do |v|
+      v.memory = "#{memory}"
+      v.cpus = "#{cores}"
+  end
+    
+  # normally the ansible provider should be used, however, because
+  # Ansible is not well supported on Windows machines, ansible is triggered from 
+  # the vm itself via a shell script
+   
+  config.vm.provision "shell", inline: <<-SHELL
+#    apt-get update
+#    apt-get install -y ansible
+    python /vagrant/provisioning/deploy.py -u "#{username}" -p "#{password}" -b "#{branch}" -c all
+#    sudo ansible-playbook -i "localhost," -c local /vagrant/provisioning/install-playbook.yml
+  SHELL
+   
+end
