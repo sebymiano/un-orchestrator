@@ -1217,9 +1217,9 @@ int RestServer::attachDevice(struct MHD_Connection *connection, void **con_cls)
 	stream.seekg(p1);
 
 	/* read pci address of this device */
-	stream >> bus_s >> hex >> bus >> c;
-	stream >> device_addr_s >> hex >> device_addr >> c;
-	stream >> function_s >> hex >> function >> c;
+	stream >> bus_s >> bus >> c;
+	stream >> device_addr_s >> device_addr >> c;
+	stream >> function_s >> function >> c;
 
 	snprintf(pci_address, sizeof(pci_address), PCI_PRI_FMT, 0x0, bus, device_addr, function);
 
