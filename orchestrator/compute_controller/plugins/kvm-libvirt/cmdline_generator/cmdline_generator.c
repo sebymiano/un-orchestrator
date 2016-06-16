@@ -283,17 +283,27 @@ int main(int argc, char * argv[])
 		}
 		else if(!strcmp("-p", argv[i]))
 		{
-			if((i+2) >= argc) {
-				printf("Missing port_name or port_alias argument value\n");
-				return -1;
-			}
+			char command[512];
 
-			setup_metadata(argv[i+1]);   // Default if not specified by -n
-			if(expose_port_cmdline(argv[i+1], argv[i+2], metadata_name) < 0)
-			{
+			sprintf(command, "ovs-appctl netdev-dpdk/get-cmdline %s > %s", argv[i+1], argv[i+1]);
+
+			int err = system(command);
+			if(err)
 				printf("Failed to IVSHMEM expose port %s\n", argv[i+1]);
-				return -1;
-			}
+
+			return 0;	/* ... */
+			//strcpy(metadata_name, argv[i+1]);
+			//if((i+2) >= argc) {
+			//	printf("Missing port_name or port_alias argument value\n");
+			//	return -1;
+			//}
+            //
+			//setup_metadata(argv[i+1]);   // Default if not specified by -n
+			//if(expose_port_cmdline(argv[i+1], argv[i+2], metadata_name) < 0)
+			//{
+			//	printf("Failed to IVSHMEM expose port %s\n", argv[i+1]);
+			//	return -1;
+			//}
 			i += 2;
 		}
 		else {
