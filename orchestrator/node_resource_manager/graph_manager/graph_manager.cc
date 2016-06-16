@@ -2211,7 +2211,7 @@ bool GraphManager::sendToDPDK(string port, string data, string & response)
 	char *buf_ptr;
 	int fd = -1;
 	char socket_path[32];
-	int ret;
+	//int ret;
 
 	/* check if we already had open a connection with this guest, if not, open
 	 * and saved it
@@ -2267,9 +2267,9 @@ bool GraphManager::sendToDPDK(string port, string data, string & response)
 		buf_ptr += n;
 	} while (left > 0);
 
-	ret = read(fd, buf, sizeof(buf));
-	if(ret == -1)
-		return false;
+	//ret = read(fd, buf, sizeof(buf));
+	//if(ret == -1)
+	//	return false;
 
 	response.assign(buf);
 	return true;
