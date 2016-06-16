@@ -17,11 +17,14 @@ meta_data = {
 'mmp' : {'repo_name':'un-orchestrator', 'github_link':'https://github.com/netgroup-polito/un-orchestrator.git',
             'comp_path':'use-cases/elastic_router/MEASURE-MMP/', 'image_id':'gitlab.testbed.se:5000/mmp:latest'},
 
-'pipelinedb' : {'repo_name':'un-orchestrator', 'github_link':'https://github.com/netgroup-polito/un-orchestrator.git',
+'pipelinedb' : {'repo_name':'un-orchestrator', 'github_link':'',
             'comp_path':'', 'image_id':'gitlab.testbed.se:5000/pipelinedb:latest'},
 
-'opentsdb' : {'repo_name':'un-orchestrator', 'github_link':'https://github.com/netgroup-polito/un-orchestrator.git',
+'opentsdb' : {'repo_name':'un-orchestrator', 'github_link':'',
             'comp_path':'', 'image_id':'gitlab.testbed.se:5000/opentsdb:latest'},
+
+'aggregator' : {'repo_name':'un-orchestrator', 'github_link':'',
+            'comp_path':'', 'image_id':'gitlab.testbed.se:5000/aggregator:latest'},
 
 'doubledecker' : {'repo_name':'un-orchestrator', 'github_link':'https://github.com/netgroup-polito/un-orchestrator.git',
             'comp_path':'use-cases/elastic_router/DoubleDecker/docker/', 'image_id':'gitlab.testbed.se:5000/doubledecker:latest'},
@@ -247,7 +250,7 @@ if __name__ == '__main__':
     parser.add_argument(
         "-c",
         "--components",
-        help="List of components to be installed, e.g., all, cadvisor, ramon, pipelinedb, opentsdb, doubledecker, ovs, mmp, ctrl_app.",
+        help="List of components to be installed, e.g., all, cadvisor, ramon, pipelinedb, opentsdb, doubledecker, ovs, mmp, ctrl_app, aggregator.",
         )
     parser.add_argument(
         "-u",
