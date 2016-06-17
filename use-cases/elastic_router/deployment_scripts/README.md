@@ -68,3 +68,14 @@ Within guest virtual machine, *deploy.py* script can be found under the path: `/
 please replace *myusername* and *mypassword* with actual username and password (without any quotation marks).
 
 It is strongly recommended that you run *deploy.py* script as root user to avoid failures which may arise in some cases.
+
+## Running without Vagarant
+In case envirnoment for ER-demo needs to be deployed in an existing virtual/physical machine, following commands should be used:
+    
+    $ sudo -i
+    $ apt-get update
+    $ apt-get install ansible
+    $ cd <path/to/deployment_scripts> 
+    $ python provisioning/deploy.py -i -u myusername -p mypassword -c all
+    $ ansible-playbook -i "localhost," -c local provisioning/install-playbook.yml
+please replace *myusername* and *mypassword* with actual username and password (without any quotation marks).
