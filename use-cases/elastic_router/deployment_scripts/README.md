@@ -22,7 +22,7 @@ There are certain command line parameters which help customize the virtual envir
 
 * **--vm-memory**: configures RAM (in MegaBytes) for the guest virtual machine. The default value is 1024 that accounts for 1GB of RAM.
 * **--vm-cores**: configures number of CPU cores to be assigned to the guest virtual machine. The default value is 1.
-* **--github-branch**: specifies which branch of [UN-orchestrator repository](https://github.com/netgroup-polito/un-orchestrator.git) should be cloned for building docker images from the source code. The default value is *new_elastic_router*. The repository is cloned in guest virtual machine under the path */opt/unify/un-orchestrator__<branchName>*. 
+* **--github-branch**: specifies which branch of [UN-orchestrator repository](https://github.com/netgroup-polito/un-orchestrator.git) should be cloned for building docker images from the source code. The default value is *new_elastic_router*. The repository is cloned in guest virtual machine under the path `/opt/unify/un-orchestrator__<branchName>`. 
 * **--docker-registry-username**: used to specify username for login at Acreo's docker registry *gitlab.testbed.se:5000/*. A login is required to pull docker images for certain components. This is a mandatory argument. 
 * **--docker-registry-password**: used to specify password corresponding to above username for login at Acreo's docker registry *gitlab.testbed.se:5000/*. This is also a mandatory argument.
 
@@ -51,7 +51,7 @@ This will log you in as user *vagrant*. Use *sudo* to get root access.
 In addition, Vagrant also supports other operations on guest virtual machine. The detail of which is available in Vagrant help.
 
 ## Post Deployment
-*deploy.py* script allows to rebuild the docker images from the component source code e.g., in case the source code has been modified after it was cloned. (The UN-orchestrator repository is cloned in guest virtual machine under the path: */opt/unify/un-orchestrator__<branchName>*). This script takes following command line arguments:  
+*deploy.py* script allows to rebuild the docker images from the component source code e.g., in case the source code has been modified after it was cloned. (The UN-orchestrator repository is cloned in guest virtual machine under the path: `/opt/unify/un-orchestrator__<branchName>`). This script takes following command line arguments:  
 
 * **-i or --interactive**: This puts the script in an interactive mode.
 * **-u or --username**: This has direct correspondence with *--docker-registry-username* argument discussed above.
@@ -60,7 +60,7 @@ In addition, Vagrant also supports other operations on guest virtual machine. Th
 * **-c or --components**: comma separated list of components to be deployed. *all* stands for whole list of available components. Other possible values can be see using the help switch (-h).
 
 ### Example
-Within guest virtual machine, *deploy.py* script can be found under the path: */vagarant/provioning*. It may be run as follow:
+Within guest virtual machine, *deploy.py* script can be found under the path: `/vagarant/provioning`. It may be run as follow:
   
      $ sudo -i
      $ cd /vagrant/provisioning
