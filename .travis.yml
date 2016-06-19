@@ -1,0 +1,28 @@
+language: cpp
+
+compiler:
+ - gcc
+
+os:
+ - linux
+
+sudo: true
+
+before_script: ./utils/travis-ci/prepare.sh
+
+script: ./ultil/travis-ci/build.sh
+
+addons:
+ apt:
+  packages:
+  - build-essential
+  - cmake
+  - cmake-curses-gui
+  - libboost-all-dev
+  - libmicrohttpd-dev
+  - libxml2-dev
+  - ethtool
+  - sqlite3
+  - libsqlite3-dev
+  - libssl-dev
+  - libvirt-dev
