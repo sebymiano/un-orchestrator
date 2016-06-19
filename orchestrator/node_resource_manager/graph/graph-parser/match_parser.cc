@@ -1,5 +1,8 @@
 #include "match_parser.h"
 
+#include <stdio.h>
+#include <inttypes.h>
+
 string MatchParser::graphID(string name_port)
 {
 	return nfId(name_port);
