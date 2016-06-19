@@ -19,7 +19,6 @@ addons:
   - cmake
   - cmake-curses-gui
   - libboost-all-dev
-  - libmicrohttpd-dev
   - libxml2-dev
   - ethtool
   - sqlite3
