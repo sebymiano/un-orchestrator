@@ -10,7 +10,7 @@ sudo: true
 
 before_script: ./utils/travis-ci/prepare.sh
 
-script: ./ultil/travis-ci/build.sh
+script: ./ultils/travis-ci/build.sh
 
 addons:
  apt:
