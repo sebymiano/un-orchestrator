@@ -18,7 +18,6 @@ addons:
   packages:
   - build-essential
   - cmake
-  - cmake-curses-gui
   - libboost-all-dev
   - libxml2-dev
   - ethtool
