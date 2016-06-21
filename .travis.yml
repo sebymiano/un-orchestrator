@@ -20,7 +20,7 @@ addons:
   - cmake
   - libboost-all-dev
   - libxml2-dev
-  - ethtool
+  - libmicrohttpd-dev
   - sqlite3
   - libsqlite3-dev
   - libssl-dev

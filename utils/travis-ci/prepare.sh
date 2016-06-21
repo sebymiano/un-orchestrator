@@ -29,10 +29,3 @@ unzip inih.zip
 cd inih
 cp * ../../orchestrator/node_resource_manager/database_manager/SQLite
 
-# microhttp
-cd $BASE/
-wget http://ftp.gnu.org/gnu/libmicrohttpd/libmicrohttpd-0.9.44.tar.gz
-tar -xvf libmicrohttpd-0.9.44.tar.gz
-cd libmicrohttpd-0.9.44
-./configure && make
-sudo make install && sudo ldconfig
